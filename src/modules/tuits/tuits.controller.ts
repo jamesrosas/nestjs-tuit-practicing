@@ -1,4 +1,5 @@
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Query } from '@nestjs/common';
+import { CreateTuitDto, UpdateTuitDto } from './dto';
 import { Tuit } from './tuit.entity';
 import { TuitsService } from './tuits.service';
 
@@ -21,13 +22,14 @@ export class TuitsController {
     }
 
     @Post()
-    createTuitt(@Body('content') content: string): void {
+    createTuitt(@Body() content: CreateTuitDto): void {
+        console.log(content instanceof CreateTuitDto)
         return this.tuitsService.createTuit(content)
     }
 
     @Patch(':id')
-    updateTuit(@Param('id') id: string, @Body() params): Tuit {
-        return this.tuitsService.updateTuit(id, params.content)
+    updateTuit(@Param('id') id: string, @Body() content: UpdateTuitDto): Tuit {
+        return this.tuitsService.updateTuit(id, content)
     }
 
     @Delete(':id')
