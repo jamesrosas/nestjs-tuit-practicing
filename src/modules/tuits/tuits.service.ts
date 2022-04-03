@@ -1,23 +1,22 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateTuitDto, UpdateTuitDto } from './dto';
 import { Tuit } from './tuit.entity';
 
 @Injectable()
 export class TuitsService {
 
-    private tuits: Tuit[] = [
-        {
-            id: "1",
-            content: "is this the first tuit 🧐"
-        }
-    ]
+    constructor(@InjectRepository(Tuit) private readonly tuitRepository: Repository<Tuit>){
 
-    getTuits(): Tuit[] {
-        return this.tuits
     }
 
-    getOneTuit(id: string): Tuit{
-        const tuit = this.tuits.find( item => item.id === id )
+    async getTuits(): Promise<Tuit[]> {
+        return await this.tuitRepository.find()
+    }
+
+    async getOneTuit(id: number): Promise<Tuit> {
+        const tuit: Tuit = await this.tuitRepository.findOneBy({id})
 
         if(!tuit){
             throw new NotFoundException("Tuit not found")
@@ -27,24 +26,31 @@ export class TuitsService {
     }
 
     createTuit({content}: CreateTuitDto){
-        const random = (Math.floor(Math.random() * 1000) + 1).toString()
-        this.tuits.push({
-            id: random,
+        const newTuit: Tuit = this.tuitRepository.create({ content })
+        return this.tuitRepository.save(newTuit)
+    }
+
+    async updateTuit(id: number, {content}: UpdateTuitDto){
+        const tuit: Tuit =  await this.tuitRepository.preload({
+            id,
             content
         })
-    }
 
-    updateTuit(id: string, {content}: UpdateTuitDto){
-        const tuit: Tuit = this.getOneTuit(id)
-        tuit.content = content
-        return tuit
-    }
-
-    deleteTuit(id: string){
-        const tuitIndex = this.tuits.findIndex( (item) => item.id === id)
-        if(tuitIndex >= 0){
-            this.tuits.splice(tuitIndex, 1)
+        if(!tuit){
+            throw new NotFoundException("Tuit not found")
         }
+
+        return this.tuitRepository.save(tuit)
+    }
+
+    async deleteTuit(id: number): Promise<void> {
+        const tuit: Tuit = await this.tuitRepository.findOneBy({id})
+        
+        if(!tuit){
+            throw new NotFoundException("Tuit doesn´t exist")
+        }
+
+        this.tuitRepository.remove(tuit)
     }
 
 

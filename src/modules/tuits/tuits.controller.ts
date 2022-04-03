@@ -11,29 +11,29 @@ export class TuitsController {
     }
 
     @Get()
-    getAllTuits(@Query() filterQuery): Tuit[] {
+    getAllTuits(@Query() filterQuery): Promise<Tuit[]> {
         const { searchTerm, orderBy } = filterQuery
         return this.tuitsService.getTuits()
     }
 
     @Get(':id')
-    getOneTuit(@Param('id') id: string): Tuit{
+    getOneTuit(@Param('id') id: number): Promise<Tuit>{
         return this.tuitsService.getOneTuit(id)
     }
 
     @Post()
-    createTuitt(@Body() content: CreateTuitDto): void {
+    createTuitt(@Body() content: CreateTuitDto): Promise<Tuit> {
         console.log(content instanceof CreateTuitDto)
         return this.tuitsService.createTuit(content)
     }
 
     @Patch(':id')
-    updateTuit(@Param('id') id: string, @Body() content: UpdateTuitDto): Tuit {
+    updateTuit(@Param('id') id: number, @Body() content: UpdateTuitDto): Promise<Tuit> {
         return this.tuitsService.updateTuit(id, content)
     }
 
     @Delete(':id')
-    deleteTuit(@Param('id') id: string):void {
+    deleteTuit(@Param('id') id: number): Promise<void> {
         return this.tuitsService.deleteTuit(id)
     }
 }
