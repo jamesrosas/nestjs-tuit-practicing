@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm"
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm"
+import { User } from "../users/entities"
 
 @Entity()
 export class Tuit {
@@ -8,6 +9,11 @@ export class Tuit {
 
     @Column()
     content: string
+
+    @ManyToOne(type => User, user => user.tuits, { cascade: true})
+    @JoinColumn({name: "user_id"})
+    user: User
+    // de esta manera cda tuit tendra relacionado el user_id que lo creo
 
     // @Column()
     // test?: boolean

@@ -8,7 +8,10 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({
     transform: true,
     whitelist: true,
-    forbidNonWhitelisted: true
+    forbidNonWhitelisted: true,
+    transformOptions: {
+      enableImplicitConversion: true
+    }
   }))
   // es buena practica hacer el uso de whitelist para que nos filtre solo la informacion que se solciita, forbidenNonWhitelisted es opcional para porder lanazar un 400 bad request.
 
