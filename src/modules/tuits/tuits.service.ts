@@ -1,13 +1,16 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+
+import { User } from '../users/entities';
 import { CreateTuitDto, PaginationDto, UpdateTuitDto } from './dto';
 import { Tuit } from './tuit.entity';
 
 @Injectable()
 export class TuitsService {
 
-    constructor(@InjectRepository(Tuit) private readonly tuitRepository: Repository<Tuit>){
+    constructor(@InjectRepository(Tuit) private readonly tuitRepository: Repository<Tuit>,
+    @InjectRepository(User) private readonly userRepository: Repository<User>){
 
     }
 
@@ -27,8 +30,8 @@ export class TuitsService {
         return tuit
     }
 
-    createTuit({content}: CreateTuitDto){
-        const newTuit: Tuit = this.tuitRepository.create({ content })
+    createTuit({content, user}: CreateTuitDto){
+        const newTuit: Tuit = this.tuitRepository.create({ content, user })
         return this.tuitRepository.save(newTuit)
     }
 

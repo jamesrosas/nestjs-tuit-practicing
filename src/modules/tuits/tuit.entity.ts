@@ -14,6 +14,7 @@ export class Tuit {
     @JoinColumn({name: "user_id"})
     user: User
     // de esta manera cda tuit tendra relacionado el user_id que lo creo
+    // y gracias a cascade true tambien cuando se elimine dicho usuario tambien se eliminaran todos su tuits.
 
     // @Column()
     // test?: boolean
